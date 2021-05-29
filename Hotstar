@@ -1,0 +1,471 @@
+package talab;
+
+import java.lang.reflect.Method;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+public class mansi  {
+	static ExtentReports report;
+	static ExtentTest test;
+	WebDriver driver;
+	
+	
+	
+	WebDriverWait wait;
+	
+	String baseurl="https://www.hotstar.com/in";
+	String driverpath="C:\\Users\\Lenovo\\Desktop\\test automation\\lab\\drivers\\chrome driver\\chromedriver.exe";
+	
+	@BeforeClass
+	public void initReport(){
+		report = new ExtentReports("C:\\Users\\Lenovo\\Desktop\\test automation\\report.html");
+	}
+	@BeforeTest
+	public void launchBrowser(){
+		System.setProperty("webdriver.chrome.driver",driverpath);
+		driver=new ChromeDriver();
+		wait=new WebDriverWait(driver,40);
+		driver.get(baseurl);
+		driver.manage().window().maximize();
+	}
+	
+	@BeforeMethod
+	public static void startReport(Method result){
+		test = report.startTest("My Project Report - "+result.getName());
+	}
+	@AfterMethod
+	public void endReport(){
+		report.endTest(test);
+		report.flush();
+	}
+	
+	
+	@Test(priority=0)
+	public void click_login() throws InterruptedException{
+		WebElement btn=	wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "login button present and Enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "login button absent or Disabled");
+		}	
+		test.log(LogStatus.PASS, "login button present and Enabled");
+		
+		Thread.sleep(500);
+	}
+	
+	
+	@Test(priority=1, dataProvider = "loginmobile", dataProviderClass = Mobile.class)
+	public void enter_phone_no(String mobile) throws InterruptedException{
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[3]/div/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div/div/input"))).sendKeys(mobile);
+		if(driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[3]/div/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/div/div/input")).getAttribute("value").equals(mobile)){
+			test.log(LogStatus.PASS, "Phone No. Entered successfully");
+		}
+		else{
+			test.log(LogStatus.FAIL, "Couldn't enter phone no.");
+		}
+		Thread.sleep(500);
+	}
+	
+	
+	
+	
+	@Test(priority=2)
+	public void click_continue() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[3]/div/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/button")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "continue button present and Enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[3]/div/div/div[1]/div/div[2]/div/div[1]/div/div/div[3]/button")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "continue button absent or Disabled");
+		}	
+		Thread.sleep(10000);
+	}
+	
+	
+	@Test(priority=3)
+	public void click_done() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[3]/div/div/div[1]/div/div[2]/div/div[1]/div/div/button")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "done button present and Enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[3]/div/div/div[1]/div/div[2]/div/div[1]/div/div/button")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "done button absent or Disabled");
+		}	
+		Thread.sleep(2000);
+	}
+	
+	
+	@Test(priority=4)
+	public void Search_Bar()
+	{
+		WebElement Search = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[4]/input")));
+		if(Search!=null && Search.isEnabled()){
+			test.log(LogStatus.PASS, "Search Bar is enabled");
+		}
+		else{
+			test.log(LogStatus.FAIL, "Search bar button absent");
+		}	
+		
+	}
+	
+	
+	
+	@Test(priority=5)
+	public void Enter_showname_inSearchBar()
+	{
+	driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[4]/input")).sendKeys("imlie");
+	wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[4]/div[2]/div[1]/article/a/div[2]"))).click();
+	test.log(LogStatus.PASS, "Successfully clicked entered show name");
+	}
+	
+	
+	@Test(priority=6)
+	public void click_Episode_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[2]/div/div/div/div/div[1]/div/div/div/div[1]/h2/a")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "Episode button present and Enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[2]/div/div/div/div/div[1]/div/div/div/div[1]/h2/a")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "Episode button absent or Disabled");
+		}	
+		
+	}
+	
+	
+	@Test(priority=7)
+	public void click_Epi_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.partialLinkText("S1 E121")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "search and played the episode");
+			driver.findElement(By.partialLinkText("S1 E121")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "failed in search and play the episode");
+		}	
+		Thread.sleep(10000);
+	}
+	
+	
+	
+	@Test(priority=8)
+	public void pause_episode() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[1]/div/div[1]/div[4]/div/div[1]")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "paused the episode");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[1]/div/div[1]/div[4]/div/div[1]")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "failed in pause the episode");
+		}	
+		Thread.sleep(1000);
+	}
+	
+	
+	@Test(priority=9)
+	public void click_on_addtoWatchlist() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[2]/div/div/div[3]/div[1]/div/div/div")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "added to watchlist");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[2]/div/div/div[3]/div[1]/div/div/div")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "failed in add to watchlist");
+		}	
+		Thread.sleep(500);
+	}
+	
+	@Test(priority=10)
+	public void click_on_profile_logo() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/img")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "profile logo button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/img")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "profile logo button is absent and not enabled");
+		}	
+		Thread.sleep(1000);
+	}
+	
+	@Test(priority=11)
+	public void click_on_watchlist() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/div/a[1]")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "watchlist button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/div/a[1]")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "watchlist button is absent and not enabled");
+		}	
+		Thread.sleep(2000);
+	}
+	
+	
+	@Test(priority=12)
+	public void click_on__episode() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.partialLinkText("S1 E121")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "episode button is present and enabled");
+			driver.findElement(By.partialLinkText("S1 E121")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "episode button is absent and not enabled");
+		}	
+		Thread.sleep(8000);
+	}
+	
+	
+	@Test(priority=13)
+	public void pause_video() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[1]/div/div[1]/div[4]/div/div[1]")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "video is paused");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[2]/div[1]/div/div[1]/div[4]/div/div[1]")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "failed in pausing the video");
+		}	
+		Thread.sleep(10000);
+	}
+	
+	
+	@Test(priority=14)
+	public void click_on_homepage() throws InterruptedException{
+		WebElement btn=wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[2]/a/img")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "homepage buttom is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[2]/a/img")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "homepage buttom is absent and disabled");
+		}	
+		
+	}
+	
+	
+	@Test(priority=15)
+	public void click_on_subscribe_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header.with-subs-nudge > div > button")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "subscribe buttom is present and enabled");
+			driver.findElement(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header.with-subs-nudge > div > button")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "subscribe buttom is absent and disabled");
+		}	
+		
+	}
+	
+	
+	@Test(priority=16)
+	public void click_on_disney_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#app > div.psp-lite__container > div.master-container > div.master-container-inner > div.header-container > div > div.header.fixed-header > div > div.nav-logo > a > img")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "disney button is present and enabled");
+			driver.findElement(By.cssSelector("#app > div.psp-lite__container > div.master-container > div.master-container-inner > div.header-container > div > div.header.fixed-header > div > div.nav-logo > a > img")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "disney button is absent and disabled");
+		}	
+		
+	}
+	
+	
+	@Test(priority=17)
+	public void drop_down_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#btn-hamburger > div.icon-wrapper > span:nth-child(3)")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "dropdown button is present and enabled");
+			driver.findElement(By.cssSelector("#btn-hamburger > div.icon-wrapper > span:nth-child(3)")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "dropdown button is absent and disabled");
+		}	
+		
+	}
+	
+	
+	@Test(priority=18)
+	public void dropdown_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#btn-hamburger > div.icon-wrapper > span:nth-child(3)")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "dropdown button is present and enabled");
+			driver.findElement(By.cssSelector("#btn-hamburger > div.icon-wrapper > span:nth-child(3)")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "dropdown button is absent and disabled");
+		}	
+		
+	}
+	@Test(priority=19)
+	public void channel_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[1]/div[2]/div/div[1]/a/div[2]")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "channel button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[1]/div[2]/div/div[1]/a/div[2]")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "channel button is absent and disabled");
+		}	
+		
+	}
+	
+	
+	@Test(priority=20)
+	public void starplus_button() throws InterruptedException{
+		WebElement btn= 	wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#app > div.list-view-container > div > div.master-container-inner > div.landing-page > div > div > div > div > div > div:nth-child(2) > div > article > a > div > div > img")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "starplus button is present and enabled");
+			driver.findElement(By.cssSelector("#app > div.list-view-container > div > div.master-container-inner > div.landing-page > div > div > div > div > div > div:nth-child(2) > div > article > a > div > div > img")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "starplus button is absent and disabled");
+		}	
+		Thread.sleep(800);
+	}
+	
+	
+	@Test(priority=21)
+	public void click_on_hotstar() throws InterruptedException{
+		WebElement btn=wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[2]/a/img")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "hotstar buttom is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[2]/a/img")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "hotstar buttom is absent and disabled");
+		}	
+		
+	}
+	
+	
+		@Test(priority=22)
+	public void disney_kids_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[3]/ul/li[7]/div/a/div")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "disney kids button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[3]/ul/li[7]/div/a/div")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "disney kids button is absent and disabled");
+		}	
+		Thread.sleep(500);
+	}
+	@Test(priority=23)
+	public void exitkids_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header > div > button")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "exit kids button is present and enabled");
+			driver.findElement(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header > div > button")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "exit kids button is absent and disabled");
+		}	
+		}
+	
+	@Test(priority=24)
+	public void news_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[3]/ul/li[4]/div/a/div")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "news button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[3]/ul/li[4]/div/a/div")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "news button is absent and disabled");
+		}	
+		Thread.sleep(800);
+	}
+	
+	@Test(priority=25)
+	public void sports_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header.with-subs-nudge > div > div.navigations > ul > li:nth-child(3) > div > a > div")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "sports button is present and enabled");
+			driver.findElement(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header.with-subs-nudge > div > div.navigations > ul > li:nth-child(3) > div > a > div")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "sports button is absent and disabled");
+		}	
+		Thread.sleep(800);
+	}
+	
+	@Test(priority=26)
+	public void movies_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[3]/ul/li[2]/div/a/div")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "movies button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[3]/ul/li[2]/div/a/div")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "movies button is absent and disabled");
+		}	
+		Thread.sleep(800);
+	}
+	
+	
+	@Test(priority=27)
+	public void profile_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/img")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "profile button is present and enabled");
+			driver.findElement(By.xpath("/html/body/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/div[5]/div/div/img")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "profile button is absent and disabled");
+		}	
+		Thread.sleep(800);
+	}
+	
+	@Test(priority=28)
+	public void logout_button() throws InterruptedException{
+		WebElement btn= wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header.with-subs-nudge > div > div.right-element.user-profile > div > div > div > a:nth-child(3)")));
+		if(btn!=null && btn.isEnabled()){
+			test.log(LogStatus.PASS, "logout button is present and enabled");
+			driver.findElement(By.cssSelector("#app > div.landing-page-container > div > div.master-container-inner > div.header-container > div > div.header.fixed-header.with-subs-nudge > div > div.right-element.user-profile > div > div > div > a:nth-child(3")).click();
+		}
+		else{
+			test.log(LogStatus.FAIL, "logout button is absent and disabled");
+		}	
+		Thread.sleep(100);
+	}
+	
+	
+	
+	
+	
+	/*
+	@Test(priority=7)
+	public void unfollow() throws InterruptedException
+	{
+		wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_.ybXk5._4EzTm > div > div:nth-child(2) > div > span > span.vBF20._1OSdk > button > div > span"))).click();
+		Thread.sleep(3000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[5]/div/div/div/div[3]/button[1]"))).click();
+		//Thread.sleep(3000);
+		//wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("body > div.RnEpo.Yx5HN > div > div > div > div.mt3GC > button.aOOlW.-Cab_"))).click();
+	}
+	
+	
+	/*
+	@AfterTest
+	public void destroySession(){
+		driver.close();
+	}*/
+	}
